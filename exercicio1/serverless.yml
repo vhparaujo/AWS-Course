@@ -1,0 +1,14 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: vhparaujo
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: exercicio1
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+
+functions:
+  hello:
+    url: true
+    handler: user-handler.handler
+ 

@@ -1,0 +1,37 @@
+# "org" ensures this Service is used with the correct Serverless Framework Access Key.
+org: vhparaujo
+# "service" is the name of this project. This will also be added to your AWS resource names.
+service: aula5-clinica
+
+provider:
+  name: aws
+  runtime: nodejs20.x
+  iam:
+    role:
+      statements:
+        - Effect: "Allow"
+          Action:
+            - dynamodb:*
+          Resource: "*"
+
+functions:
+  patientsCreate:
+    handler: src/patients/functions/create.handler
+    events:
+      - http:
+          path: patients
+          method: POST
+
+resources:
+  Resources:
+    patientsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Patient
+        AttributeDefinitions:
+          - AttributeName: PK #taxId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST

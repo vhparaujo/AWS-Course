@@ -1,17 +1,21 @@
 import dynamoose from "dynamoose";
 import { PatientDynamoSchema } from "./patients.schema.js";
 import crypto from "node:crypto";
+import {
+  EventBridgeClient,
+  PutEventsCommand,
+} from "@aws-sdk/client-eventbridge";
 
 const PatientModel = dynamoose.model("Patient", PatientDynamoSchema, {
   create: false,
   waitForActive: false,
 });
 
-export async function createPatient(payload) {
+async function createPatient(payload) {
   payload.id = crypto.randomUUID();
 
   payload.birthDate = payload.birthDate
-    ? new Date(payload.birthDate).toISOString().split('T')[0]
+    ? new Date(payload.birthDate)
     : undefined;
 
   payload.PK = `PATIENT#${payload.id}`;
@@ -50,14 +54,17 @@ async function update(id, payload) {
   }
 
   if (payload.birthDate) {
-    payload.birthDate = new Date(payload.birthDate).toISOString().split('T')[0];
+    payload.birthDate = new Date(payload.birthDate);
   }
 
   const updatedPayload = {
     ...payload,
   };
 
-  const result = await PatientModel.update({ PK: `PATIENT#${id}` }, updatedPayload);
+  const result = await PatientModel.update(
+    { PK: `PATIENT#${id}` },
+    updatedPayload
+  );
 
   result.PK = undefined;
 
@@ -70,9 +77,27 @@ async function deleteById(id) {
   return { message: "Patient deleted successfully" };
 }
 
+async function notifyPatientCreated(patient) {
+  const client = new EventBridgeClient({});
+
+  await client.send(
+    new PutEventsCommand({
+      Entries: [
+        {
+          Source: "aula5-clinica",
+          DetailType: "PatientCreated",
+          Detail: JSON.stringify({ patient }),
+        },
+      ],
+    })
+  );
+}
+
 export default {
+  createPatient,
   findAll,
   findOneById,
   update,
   deleteById,
+  notifyPatientCreated,
 };

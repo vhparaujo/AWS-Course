@@ -4,10 +4,12 @@ import httpErrorHandler from "@middy/http-error-handler";
 import httpHeaderNormalizer from "@middy/http-header-normalizer";
 import httpContentNegotiation from "@middy/http-content-negotiation";
 import httpResponseSerializer from "@middy/http-response-serializer";
-import { createPatient } from "../patients.service.js";
+import PatientsService from "../patients.service.js";
 
 const create = async (event) => {
-  const patient = await createPatient(event.body);
+  const patient = await PatientsService.createPatient(event.body);
+
+  await PatientsService.notifyPatientCreated(patient);
 
   return {
     statusCode: 201,

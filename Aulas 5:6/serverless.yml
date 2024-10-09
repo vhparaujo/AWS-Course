@@ -12,6 +12,7 @@ provider:
         - Effect: "Allow"
           Action:
             - dynamodb:*
+            - events:*
           Resource: "*"
 
 functions:
@@ -49,6 +50,26 @@ functions:
       - http:
           method: DELETE
           path: patients/{id}
+
+  patientsMailSender:
+    handler: src/patients/functions/mail-sender.handler
+    events:
+      - eventBridge:
+          pattern:
+            source:
+              - "aula5-clinica"
+            detail-type:
+              - "PatientCreated"
+
+  patientsPushSender:
+    handler: src/patients/functions/push-sender.handler
+    events:
+      - eventBridge:
+          pattern:
+            source:
+              - "aula5-clinica"
+            detail-type:
+              - "PatientCreated"
 
 resources:
   Resources:

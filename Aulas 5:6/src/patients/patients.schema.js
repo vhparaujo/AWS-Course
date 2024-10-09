@@ -9,7 +9,7 @@ export const PatientDynamoSchema = new dynamoose.Schema(
     id: String,
     taxId: String,
     healthServiceNumber: String,
-    birthDate: String,
+    birthDate: Date,
     name: String,
     weight: Number,
     height: Number,

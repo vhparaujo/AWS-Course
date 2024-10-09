@@ -22,6 +22,34 @@ functions:
           path: patients
           method: POST
 
+  patientsFindById:
+    handler: src/patients/functions/find.findByIdHandler
+    events:
+      - http:
+          method: GET
+          path: patients/{id}
+
+  patientsFind:
+    handler: src/patients/functions/find.findHandler
+    events:
+      - http:
+          method: GET
+          path: patients
+
+  patientsPatch:
+    handler: src/patients/functions/patch.handler
+    events:
+      - http:
+          method: PATCH
+          path: patients/{id}
+
+  patientsRemove:
+    handler: src/patients/functions/remove.handler
+    events:
+      - http:
+          method: DELETE
+          path: patients/{id}
+
 resources:
   Resources:
     patientsTable:

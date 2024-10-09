@@ -10,9 +10,13 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@aws-sdk/client-eventbridge": "^3.667.0",
     "@middy/core": "^5.5.0",
+    "@middy/http-content-negotiation": "^5.5.0",
     "@middy/http-error-handler": "^5.5.0",
+    "@middy/http-header-normalizer": "^5.5.0",
     "@middy/http-json-body-parser": "^5.5.0",
+    "@middy/http-response-serializer": "^5.5.0",
     "dynamoose": "^4.0.1"
   }
 }

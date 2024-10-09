@@ -14,13 +14,16 @@ export const PatientDynamoSchema = new dynamoose.Schema(
     weight: Number,
     height: Number,
     bloodType: String,  
-    // address: {
-    //     street: String, 
-    //     city: String,
-    //     state: String,
-    //     country: String,
-    //     postalCode: String, 
-    // },
+    address: {
+      type: Object,
+      schema: {
+        street: String, 
+        city: String,
+        state: String,
+        country: String,
+        postalCode: String, 
+      },
+    },
     phoneNumber: String,
   }, 
   {

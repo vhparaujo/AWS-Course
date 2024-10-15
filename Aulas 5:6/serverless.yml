@@ -16,6 +16,7 @@ provider:
           Resource: "*"
 
 functions:
+  # Patients functions
   patientsCreate:
     handler: src/patients/functions/create.handler
     events:
@@ -71,6 +72,42 @@ functions:
             detail-type:
               - "PatientCreated"
 
+  # Doctors functions
+  doctorsCreate:
+    handler: src/doctors/functions/create.handler
+    events:
+      - http:
+          path: doctors
+          method: POST
+
+  doctorsFindById:
+    handler: src/doctors/functions/find.findByIdHandler
+    events:
+      - http:
+          method: GET
+          path: doctors/{id}
+
+  doctorsFind:
+    handler: src/doctors/functions/find.findHandler
+    events:
+      - http:
+          method: GET
+          path: doctors
+
+  doctorsPatch:
+    handler: src/doctors/functions/patch.handler
+    events:
+      - http:
+          method: PATCH
+          path: doctors/{id}
+
+  doctorsRemove:
+    handler: src/doctors/functions/remove.handler
+    events:
+      - http:
+          method: DELETE
+          path: doctors/{id}
+
 resources:
   Resources:
     patientsTable:
@@ -79,6 +116,18 @@ resources:
         TableName: Patient
         AttributeDefinitions:
           - AttributeName: PK #taxId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    doctorsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Doctor
+        AttributeDefinitions:
+          - AttributeName: PK #doctorId
             AttributeType: S
         KeySchema:
           - AttributeName: PK

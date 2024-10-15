@@ -11,16 +11,12 @@ const DoctorModel = dynamoose.model("Doctor", DoctorDynamoSchema, {
   waitForActive: false,
 });
 
-async function createPatient(payload) {
+async function createDoctor(payload) {
   payload.id = crypto.randomUUID();
 
-  payload.birthDate = payload.birthDate
-    ? new Date(payload.birthDate)
-    : undefined;
+  payload.PK = `DOCTOR#${payload.id}`;
 
-  payload.PK = `PATIENT#${payload.id}`;
-
-  const result = await PatientModel.create(payload);
+  const result = await DoctorModel.create(payload);
 
   result.PK = undefined;
 
@@ -28,7 +24,7 @@ async function createPatient(payload) {
 }
 
 async function findOneById(id) {
-  const result = await PatientModel.get({ PK: `PATIENT#${id}` });
+  const result = await DoctorModel.get({ PK: `DOCTOR#${id}` });
 
   if (result) {
     result.PK = undefined;
@@ -38,7 +34,7 @@ async function findOneById(id) {
 }
 
 async function findAll() {
-  const result = await PatientModel.scan().exec();
+  const result = await DoctorModel.scan().exec();
 
   return result.map((item) => {
     item.PK = undefined;
@@ -47,22 +43,18 @@ async function findAll() {
 }
 
 async function update(id, payload) {
-  const patient = await PatientModel.get({ PK: `PATIENT#${id}` });
+  const doctor = await DoctorModel.get({ PK: `DOCTOR#${id}` });
 
-  if (!patient) {
+  if (!doctor) {
     return null;
-  }
-
-  if (payload.birthDate) {
-    payload.birthDate = new Date(payload.birthDate);
   }
 
   const updatedPayload = {
     ...payload,
   };
 
-  const result = await PatientModel.update(
-    { PK: `PATIENT#${id}` },
+  const result = await DoctorModel.update(
+    { PK: `DOCTOR#${id}` },
     updatedPayload
   );
 
@@ -72,32 +64,31 @@ async function update(id, payload) {
 }
 
 async function deleteById(id) {
-  await PatientModel.delete({ PK: `PATIENT#${id}` });
+  await DoctorModel.delete({ PK: `DOCTOR#${id}` });
 
-  return { message: "Patient deleted successfully" };
+  return { message: "Doctor deleted successfully" };
 }
 
-async function notifyPatientCreated(patient) {
-  const client = new EventBridgeClient({});
+// async function notifyPatientCreated(patient) {
+//   const client = new EventBridgeClient({});
 
-  await client.send(
-    new PutEventsCommand({
-      Entries: [
-        {
-          Source: "aula5-clinica",
-          DetailType: "PatientCreated",
-          Detail: JSON.stringify({ patient }),
-        },
-      ],
-    })
-  );
-}
+//   await client.send(
+//     new PutEventsCommand({
+//       Entries: [
+//         {
+//           Source: "aula5-clinica",
+//           DetailType: "PatientCreated",
+//           Detail: JSON.stringify({ patient }),
+//         },
+//       ],
+//     })
+//   );
+// }
 
 export default {
-  createPatient,
+  createDoctor,
   findAll,
   findOneById,
   update,
   deleteById,
-  notifyPatientCreated,
 };

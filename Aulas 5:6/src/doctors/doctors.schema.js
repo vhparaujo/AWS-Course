@@ -19,17 +19,6 @@ export const DoctorDynamoSchema = new dynamoose.Schema(
     },
     specialty: String,
     phoneNumber: String,
-    address: {
-      // Endereço
-      type: Object,
-      schema: {
-        street: String,
-        city: String,
-        state: String,
-        country: String,
-        postalCode: String,
-      },
-    },
   },
   {
     timestamps: true, // Adiciona campos de criação e atualização automaticamente

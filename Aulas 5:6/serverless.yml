@@ -108,6 +108,42 @@ functions:
           method: DELETE
           path: doctors/{id}
 
+    # Funções de consultas (appointments)
+  appointmentsCreate:
+    handler: src/appointments/functions/create.handler
+    events:
+      - http:
+          path: appointments
+          method: POST
+
+  appointmentsFindById:
+    handler: src/appointments/functions/find.findByIdHandler
+    events:
+      - http:
+          method: GET
+          path: appointments/{id}
+
+  appointmentsFind:
+    handler: src/appointments/functions/find.findHandler
+    events:
+      - http:
+          method: GET
+          path: appointments
+
+  appointmentsPatch:
+    handler: src/appointments/functions/patch.handler
+    events:
+      - http:
+          method: PATCH
+          path: appointments/{id}
+
+  appointmentsRemove:
+    handler: src/appointments/functions/remove.handler
+    events:
+      - http:
+          method: DELETE
+          path: appointments/{id}
+
 resources:
   Resources:
     patientsTable:
@@ -128,6 +164,18 @@ resources:
         TableName: Doctor
         AttributeDefinitions:
           - AttributeName: PK #doctorId
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PK
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
+
+    appointmentsTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Appointment
+        AttributeDefinitions:
+          - AttributeName: PK #appointmentId
             AttributeType: S
         KeySchema:
           - AttributeName: PK
